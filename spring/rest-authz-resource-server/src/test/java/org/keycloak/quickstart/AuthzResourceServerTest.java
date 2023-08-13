@@ -45,10 +45,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class AuthzResourceServerTest {
 
-	@AfterAll
-	public static void cleanUp() throws Exception {
-		deleteRealm("admin", "admin", "quickstart");
-	}
+	// @AfterAll
+	// public static void cleanUp() throws Exception {
+	// 	deleteRealm("admin", "admin", "quickstart");
+	// }
 
 	@BeforeAll
 	public static void onBeforeClass() {
@@ -75,8 +75,26 @@ public class AuthzResourceServerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("Hello, jdoe!")));
 
+		this.mvc.perform(post("/protected/premium").with(bearerTokenFor("jdoe")))
+				.andExpect(status().isForbidden());
+
 		this.mvc.perform(get("/protected/premium").with(bearerTokenFor("alice")))
 				.andExpect(status().isForbidden());
+	}
+
+	@Test
+	void testOnlyPremiumCreateUsers() throws Exception {
+		this.mvc.perform(get("/protected/premium").with(bearerTokenFor("philipz")))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, philipz!")));
+
+		this.mvc.perform(post("/protected/premium").with(bearerTokenFor("philipz")))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, philipz! create")));
+
+		this.mvc.perform(get("/").with(bearerTokenFor("philipz")))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("Hello, philipz!")));
 	}
 
 	@Test

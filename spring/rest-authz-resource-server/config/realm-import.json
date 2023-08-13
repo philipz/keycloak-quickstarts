@@ -33,6 +33,21 @@
       ]
     },
     {
+      "username": "philipz",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "philipz"
+        }
+      ],
+      "realmRoles": [
+        "user",
+        "user_premium",
+        "user_premium_create"
+      ]
+    },
+    {
       "username": "service-account-authz-servlet",
       "enabled": true,
       "serviceAccountClientId": "authz-servlet",
@@ -50,6 +65,10 @@
       {
         "name": "user_premium",
         "description": "User Premium privileges"
+      },
+      {
+        "name": "user_premium_create",
+        "description": "User Premium create privileges"
       }
     ]
   },
@@ -86,6 +105,9 @@
             "scopes": [
               {
                 "name": "urn:servlet-authz:protected:premium:access"
+              },
+              {
+                "name": "urn:servlet-authz:protected:premium:create"
               }
             ]
           }
@@ -112,13 +134,23 @@
             }
           },
           {
+            "name": "Only Premium User Policy Create",
+            "description": "Defines that only premium users can create something",
+            "type": "role",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "roles": "[{\"id\":\"user_premium_create\",\"required\":false}]"
+            }
+          },
+          {
             "name": "All Users Policy",
             "description": "Defines that all users can do something",
             "type": "aggregate",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
-              "applyPolicies": "[\"Any User Policy\",\"Only Premium User Policy\"]"
+              "applyPolicies": "[\"Any User Policy\",\"Only Premium User Policy\",\"Only Premium User Policy Create\"]"
             }
           },
           {
@@ -142,6 +174,18 @@
               "resources": "[\"Protected Resource\"]",
               "applyPolicies": "[\"All Users Policy\"]"
             }
+          },
+          {
+            "name": "Premium Resource Permission Create",
+            "description": "A policy that defines create to premium resources",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "resources": "[\"Premium Resource\"]",
+              "scopes": "[\"urn:servlet-authz:protected:premium:create\"]",
+              "applyPolicies": "[\"Only Premium User Policy Create\"]"
+            }
           }
         ],
         "scopes": [
@@ -162,6 +206,9 @@
           },
           {
             "name": "urn:servlet-authz:page:main:actionForUser"
+          },
+          {
+            "name": "urn:servlet-authz:protected:premium:create"
           }
         ]
       }

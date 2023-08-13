@@ -18,6 +18,7 @@ package org.keycloak.quickstart;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,5 +32,10 @@ public class OAuth2ResourceServerController {
 	@GetMapping("/protected/premium")
 	public String premium(@AuthenticationPrincipal Jwt jwt) {
 		return String.format("Hello, %s!", jwt.getClaimAsString("preferred_username"));
+	}
+
+	@PostMapping("/protected/premium")
+	public String premiumCreate(@AuthenticationPrincipal Jwt jwt) {
+		return String.format("Hello, %s! create", jwt.getClaimAsString("preferred_username"));
 	}
 }

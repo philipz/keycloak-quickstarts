@@ -4,5 +4,30 @@
   "resource": "authz-servlet",
   "credentials": {
     "secret": "secret"
-  }
+  },
+  "http-method-as-scope": true,
+  "paths": [
+    {
+      "path" : "/protected/premium/*",
+      "methods" : [
+        {
+          "method": "GET",
+          "scopes" : ["urn:servlet-authz:protected:premium:access"]
+        },
+        {
+          "method": "POST",
+          "scopes" : ["urn:servlet-authz:protected:premium:create"]
+        }
+      ]
+    },
+    {
+      "path" : "/*",
+      "methods" : [
+        {
+          "method": "GET",
+          "scopes" : ["urn:servlet-authz:protected:resource:access"]
+        }
+      ]
+    }
+  ]
 }
