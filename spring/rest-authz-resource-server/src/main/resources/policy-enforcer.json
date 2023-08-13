@@ -5,7 +5,6 @@
   "credentials": {
     "secret": "secret"
   },
-  "http-method-as-scope": true,
   "paths": [
     {
       "path" : "/protected/premium/*",
